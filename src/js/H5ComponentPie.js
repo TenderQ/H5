@@ -96,9 +96,6 @@ var H5ComponentPie = function(name, config) {
         ctx.beginPath();
         ctx.moveTo(r, r);
 
-        if (per >= 1) {
-            component.find('.text').css('opacity', 1);
-        }
         if (per <= 0) {
             ctx.arc(r, r, r, 0, 2 * Math.PI);
             component.find('.text').css('opacity', 0)
@@ -108,6 +105,13 @@ var H5ComponentPie = function(name, config) {
 
         ctx.fill();
         ctx.stroke();
+
+        if (per >= 1) {
+        	component.find('.text').css('transition','all 0s');
+        	H5ComponentPie.resort(component.find('.text'));
+        	component.find('.text').css('transition','all 1s');
+            component.find('.text').css('opacity', 1);
+        }
     }
     draw(0);
     component.on('onLoad', function() {
@@ -129,4 +133,45 @@ var H5ComponentPie = function(name, config) {
         }
     });
     return component;
+}
+
+H5ComponentPie.resort = function(list){
+	// 检测相交
+	var compare = function(domA, domB){
+		var offsetA = $(domA).offset();
+		var positionA_x = [offsetA.left,offsetA.left+$(domA).width()];
+		var positionA_y = [offsetA.top,offsetA.top+$(domA).height()];
+		var offsetB = $(domB).offset();
+		var positionB_x = [offsetB.left,offsetB.left+$(domB).width()];
+		var positionB_y = [offsetB.top,offsetB.top+$(domB).height()];
+		var intersect_x = (positionA_x[0] > positionB_x[0] && positionA_x[0] < positionB_x[1]) || (positionA_x[1] < positionB_x[1] && positionA_x[1] > positionB_x[0]);
+		var intersect_Y = (positionA_y[0] > positionB_y[0] && positionA_y[0] < positionB_y[1]) || (positionA_y[1] < positionB_y[1] && positionA_y[1] > positionB_y[0]);
+		return intersect_x && intersect_y;
+	}
+	var reset = function(domA, domB){
+		if($(domA).css('top') != 'auto'){
+			$(domA).css('top',parseInt($(domA).css('top')) + $(domB).height());
+		}
+		if($(domA).css('bottom') != 'auto'){
+			$(domA).css('bottom',parseInt($(domA).css('bottom')) + $(domB).height());
+		}
+		
+	}
+	var willReset = [list[0]];
+
+	$.each(list, function(i,item){
+		if(compare(willReset[willReset.length-1], item)){
+			willReset.push(item);
+		}
+	});
+
+	if(willReset.length > 1) {
+		$.each(willReset, function(i, item){
+			if(willReset[i+1]){
+				reset(item, willReset[i+1]);
+			}
+		})
+		H5ComponentPie.resort(willReset);
+	}
+
 }

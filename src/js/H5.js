@@ -1,5 +1,4 @@
 /* 内容管理对象 */
-
 var H5 = function() {
     this.id = ('h5_' + Math.random()).replace('.', '_');
     this.el = $('<div class="h5" id=' + this.id + '>').hide();
@@ -14,21 +13,21 @@ var H5 = function() {
      * @return h5对象，链式调用
      */
     this.addPage = function(name, text) {
-            var page = $('<div class="h5_page section">');
+        var page = $('<div class="h5_page section">');
 
-            if (name !== undefined) {
-                page.addClass('h5_page_' + name);
-            }
-            if (text !== undefined) {
-                page.text(text);
-            }
-            this.el.append(page);
-            this.page.push(page);
-            if (typeof this.whenAddPage === 'function') {
-                this.whenAddPage();
-            }
-            return this;
+        if (name !== undefined) {
+            page.addClass('h5_page_' + name);
         }
+        if (text !== undefined) {
+            page.text(text);
+        }
+        this.el.append(page);
+        this.page.push(page);
+        if (typeof this.whenAddPage === 'function') {
+            this.whenAddPage();
+        }
+        return this;
+    }
         // 新增一个组件
     this.addComponent = function(name, config) {
         var config = config || {};

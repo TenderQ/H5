@@ -37,6 +37,11 @@ gulp.task('img', function () {
         .pipe(gulp.dest(app.buildPath + 'imgs'));
 })
 
+gulp.task('json', function () {
+    gulp.src(app.srcPath + 'data.json')
+        .pipe(gulp.dest(app.buildPath))
+})
+
 gulp.task('html', function () {
     gulp.src(app.srcPath + 'index.html')
         .pipe(gulp.dest(app.buildPath))
@@ -79,16 +84,17 @@ gulp.task('serve', function () {
     gulp.watch(app.srcPath + 'imgs/*', ['img']);
     gulp.watch(app.srcPath + 'libs/*', ['libs']);
     gulp.watch(app.srcPath + 'index.html', ['inject']);
+    gulp.watch(app.srcPath + 'data.json', ['json']);
 
-    gulp.watch(app.buildPath + 'index.html').on('change', browserSync.reload);
-    gulp.watch(app.buildPath + 'css/*').on('change', browserSync.reload);
-    gulp.watch(app.buildPath + 'js/*').on('change', browserSync.reload);
-    gulp.watch(app.buildPath + 'imgs/*').on('change', browserSync.reload);
-    gulp.watch(app.buildPath + 'libs/*').on('change', browserSync.reload);
+    gulp.watch(app.srcPath + 'index.html').on('change', browserSync.reload);
+    gulp.watch(app.srcPath + 'css/*').on('change', browserSync.reload);
+    gulp.watch(app.srcPath + 'js/*').on('change', browserSync.reload);
+    gulp.watch(app.srcPath + 'imgs/*').on('change', browserSync.reload);
+    gulp.watch(app.srcPath + 'libs/*').on('change', browserSync.reload);
 });
 
 gulp.task('build', function (cb) {
-    runSequence(['js', 'css', 'img', 'lib'], 'inject', 'serve', cb);
+    runSequence(['js', 'css', 'img','json', 'lib'], 'inject', 'serve', cb);
 });
 
 
